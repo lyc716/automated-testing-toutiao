@@ -1,0 +1,64 @@
+pip install Appium-Python-Client
+from appium import webdriver
+import unittest
+
+
+
+desired_caps = {
+    'platformName': 'Android',
+    'deviceName': 'Your Device Name',
+    'appPackage': 'com.example.yourapp',  # 替换为你的应用包名
+    'appActivity': '.MainActivity'  # 替换为你的启动Activity
+}
+
+driver = webdriver.Remote('http://localhost:4723', desired_caps)
+
+class TestToutiao(unittest.TestCase):
+
+    def setUp(self):
+        self.driver = webdriver.Remote('http://localhost:4723', desired_caps)
+
+    def test_home_page(self):
+        # 检查头条新闻是否能正常加载
+        news_title = self.driver.find_element_by_id('news_title_id')  # 替换为实际的新闻标题ID
+        self.assertTrue(news_title.is_displayed())
+
+        # 切换不同分类
+        category_button = self.driver.find_element_by_id('category_button_id')  # 替换为实际的分类按钮ID
+        category_button.click()
+        time.sleep(2)  # 等待页面加载
+        new_news_title = self.driver.find_element_by_id('news_title_id')
+        self.assertNotEqual(news_title.text, new_news_title.text)
+
+    def test_news_content_page(self):
+        # 点击进入新闻详情页
+        news_title = self.driver.find_element_by_id('news_title_id')
+        news_title.click()
+        time.sleep(2)
+
+        # 检查文章内容是否加载
+        article_content = self.driver.find_element_by_id('article_content_id')  # 替换为实际的文章内容ID
+        self.assertTrue(article_content.is_displayed())
+
+        # 测试评论功能
+        comment_button = self.driver.find_element_by_id('comment_button_id')  # 替换为实际的评论按钮ID
+        comment_button.click()
+        time.sleep(2)
+
+    def test_comments_page(self):
+        # 发表评论
+        input_box = self.driver.find_element_by_id('input_box_id')  # 替换为实际的输入框ID
+        input_box.send_keys('这是一条评论。')
+        submit_button = self.driver.find_element_by_id('submit_button_id')  # 替换为实际的提交按钮ID
+        submit_button.click()
+        time.sleep(2)
+
+        # 检查评论是否成功发布
+        my_comment = self.driver.find_element_by_xpath('//android.widget.TextView[@text="这是一条评论。"]')
+        self.assertTrue(my_comment.is_displayed())
+
+    def tearDown(self):
+        self.driver.quit()
+
+if __name__ == '__main__':
+    unittest.main()
