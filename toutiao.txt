@@ -3,7 +3,6 @@ from appium import webdriver
 import unittest
 
 
-
 desired_caps = {
     'platformName': 'Android',
     'deviceName': 'Your Device Name',
